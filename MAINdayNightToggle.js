@@ -1,5 +1,25 @@
 'use strict';
 
+export var scriptProperties = createScriptProperties()
+
+    .addSlider({
+        name: 'dayStart',
+        label: 'Day Start',
+        value: 8,
+        min: 0,
+        max: 24,
+        integer: true
+    })
+    .addSlider({
+        name: 'nightStart',
+        label: 'Night Start',
+        value: 20,
+        min: 0,
+        max: 24,
+        integer: true
+    })
+    .finish();
+
 // Define the sprite sheet states
 const states = ['automatic', 'day', 'night'];
 let currentStateIndex = 0;
@@ -19,7 +39,7 @@ export function init() {
     anim.setFrame(currentStateIndex);
     
     // Set the initial shared state
-    shared.currentState = states[currentStateIndex];
+    shared.currentTODState = getSharedState();
 }
 
 export function cursorClick(event) {
@@ -31,8 +51,21 @@ export function cursorClick(event) {
     anim.setFrame(currentStateIndex);
     
     // Update the shared state value
-    shared.currentState = states[currentStateIndex];
+    shared.currentTODState = getSharedState();
 
     // Save the current state to local storage
     localStorage.set('currentTimeState', states[currentStateIndex]);
+}
+
+function isDayTime() {
+    let currentTime = engine.timeOfDay;
+    return currentTime >= (scriptProperties.dayStart / 24) && currentTime < (scriptProperties.nightStart / 24);
+}
+
+function getSharedState() {
+    if (states[currentStateIndex] === 'automatic') {
+        return isDayTime() ? 'day' : 'night';
+    } else {
+        return states[currentStateIndex];
+    }
 }
