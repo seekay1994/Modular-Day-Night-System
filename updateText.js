@@ -1,6 +1,5 @@
 'use strict';
 
-// Customizable text for day and night values and shared value name
 export var scriptProperties = createScriptProperties()
     .addText({
         name: 'dayText',
@@ -16,20 +15,13 @@ export var scriptProperties = createScriptProperties()
 
 let currentText;
 
-function isDayTime() {
-    let currentTime = engine.timeOfDay;
-    return currentTime >= 0.275 && currentTime < 0.875;
-}
-
 export function init(value) {
     // Initialize currentText based on initial state
-    let initialState = shared.currentState || 'automatic';
+    let initialState = shared.currentTODState;
     if (initialState === 'day') {
         currentText = scriptProperties.dayText;
     } else if (initialState === 'night') {
         currentText = scriptProperties.nightText;
-    } else {
-        currentText = isDayTime() ? scriptProperties.dayText : scriptProperties.nightText;
     }
 
     // Save the initial value to the shared value
@@ -37,15 +29,13 @@ export function init(value) {
 }
 
 export function update(value) {
-    let currentState = shared.currentState;
+    let currentState = shared.currentTODState;
     let newText;
 
     if (currentState === 'day') {
         newText = scriptProperties.dayText;
     } else if (currentState === 'night') {
         newText = scriptProperties.nightText;
-    } else if (currentState === 'automatic') {
-        newText = isDayTime() ? scriptProperties.dayText : scriptProperties.nightText;
     }
 
     return newText;
