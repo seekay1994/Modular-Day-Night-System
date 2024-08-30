@@ -1,6 +1,5 @@
 'use strict';
 
-// Customizable sliders and text for day and night values and shared value name
 export var scriptProperties = createScriptProperties()
     .addSlider({
         name: 'dayValue',
@@ -18,11 +17,6 @@ export var scriptProperties = createScriptProperties()
         max: 1,
         integer: false
     })
-    .addText({
-        name: 'sharedValueName',
-        label: 'Shared Value Name',
-        value: 'sharedDnNValue'
-    })
     .addSlider({
         name: 'transitionSpeed',
         label: 'Transition Speed',
@@ -35,43 +29,28 @@ export var scriptProperties = createScriptProperties()
 
 let currentValue;
 
-function isDayTime() {
-    let currentTime = engine.timeOfDay;
-    return currentTime >= 0.275 && currentTime < 0.875;
-}
-
 export function init(value) {
     // Initialize currentValue based on initial state
-    let initialState = shared.currentState || 'automatic';
+    let initialState = shared.currentTODState;
     if (initialState === 'day') {
         currentValue = scriptProperties.dayValue;
     } else if (initialState === 'night') {
         currentValue = scriptProperties.nightValue;
-    } else {
-        currentValue = isDayTime() ? scriptProperties.dayValue : scriptProperties.nightValue;
     }
-
-    // Save the initial value to the shared value
-    shared[scriptProperties.sharedValueName] = currentValue;
 }
 
 export function update(value) {
-    let currentState = shared.currentState;
+    let currentState = shared.currentTODState;
     let targetValue;
 
     if (currentState === 'day') {
         targetValue = scriptProperties.dayValue;
     } else if (currentState === 'night') {
         targetValue = scriptProperties.nightValue;
-    } else if (currentState === 'automatic') {
-        targetValue = isDayTime() ? scriptProperties.dayValue : scriptProperties.nightValue;
     }
 
     // Smooth transition
     currentValue = lerp(currentValue, targetValue, scriptProperties.transitionSpeed * engine.frametime);
-
-    // Save the value to the shared value
-    shared[scriptProperties.sharedValueName] = currentValue;
 
     return currentValue;
 }
