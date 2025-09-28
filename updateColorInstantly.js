@@ -1,21 +1,11 @@
 'use strict';
 
-// Customizable colors
 export var scriptProperties = createScriptProperties()
-    .addColor({
-        name: 'dayColor',
-        label: 'Day Color',
-        value: new Vec3(1, 1, 1) // Default white color
-    })
-    .addColor({
-        name: 'nightColor',
-        label: 'Night Color',
-        value: new Vec3(0, 0, 0) // Default black color
-    })
-    .finish();
+    .addColor({name: 'dayColor'     ,label: 'Day Color'     ,value: new Vec3(1, 1, 1)})
+    .addColor({name: 'nightColor'   ,label: 'Night Color'   ,value: new Vec3(0, 0, 0)})
+.finish();
 
-
-export function update(value) {
+export function update() {
     let currentState = shared.currentTODState;
     let newColor;
 

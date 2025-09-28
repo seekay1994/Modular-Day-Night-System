@@ -1,40 +1,20 @@
 'use strict';
 
-import * as WEColor from 'WEColor';
-
-// Customizable colors
 export var scriptProperties = createScriptProperties()
-    .addColor({
-        name: 'dayColor',
-        label: 'Day Color',
-        value: new Vec3(1, 1, 1) // Default white color
-    })
-    .addColor({
-        name: 'nightColor',
-        label: 'Night Color',
-        value: new Vec3(0, 0, 0) // Default black color
-    })
-    .addSlider({
-        name: 'transitionSpeed',
-        label: 'Transition Speed',
-        value: 5,
-        min: 1,
-        max: 10,
-        integer: false
-    })
-    .finish();
+    .addColor({ name: 'dayColor',           label: 'Day Color',         value: new Vec3(1, 1, 1)})
+    .addColor({ name: 'nightColor',         label: 'Night Color',       value: new Vec3(0, 0, 0)})
+    .addSlider({name: 'transitionSpeed',    label: 'Transition Speed',  value: 5,   min: 1,     max: 10,    integer: false})
+.finish();
 
-let targetColor;
 let smoothColor;
 let transitionSpeed;
 
-export function init(value) {
-    targetColor = scriptProperties.dayColor;
+export function init() {
     smoothColor = scriptProperties.dayColor;
     transitionSpeed = scriptProperties.transitionSpeed;
 }
 
-export function update(value) {
+export function update() {
     let currentState = shared.currentTODState;
     let newColor;
 
@@ -44,7 +24,6 @@ export function update(value) {
         newColor = scriptProperties.nightColor;
     }
 
-    // Smooth transition
     smoothColor = smoothColor.mix(newColor, Math.min(1.0, engine.frametime * transitionSpeed));
 
     return smoothColor;
